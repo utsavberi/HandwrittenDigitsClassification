@@ -74,7 +74,7 @@ def preprocess():
         test_data = np.vstack((test_data, mat["test" + str(i)]))
         test_label = np.append(test_label, np.repeat(i, mat["train" + str(i)].shape[0]))
 
-    #normalize data
+    #normalize data 
     np.place(train_data, train_data > 0, 1)
     np.place(validation_data,  validation_data > 0, 1)
     np.place(test_data, test_data > 0, 1)
