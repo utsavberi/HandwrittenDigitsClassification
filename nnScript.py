@@ -59,9 +59,9 @@ def preprocess():
 
     # Pick a reasonable size for validation data
     #Your code here
-    train_data = np.array([]).reshape(0, 784)
-    validation_data = np.array([]).reshape(0, 784)
-    test_data = np.array([]).reshape(0, 784)
+    train_data = np.array([], dtype=np.dtype('f')).reshape(0, 784)
+    validation_data = np.array([], dtype=np.dtype('f')).reshape(0, 784)
+    test_data = np.array([], dtype=np.dtype('f')).reshape(0, 784)
     train_label = np.array([])
     validation_label = np.array([])
     test_label = np.array([])
@@ -73,6 +73,11 @@ def preprocess():
         validation_label = np.append(validation_label, np.repeat(i, mat["train" + str(i)][5000:].shape[0]))
         test_data = np.vstack((test_data, mat["test" + str(i)]))
         test_label = np.append(test_label, np.repeat(i, mat["train" + str(i)].shape[0]))
+
+    #normalize data
+    np.place(train_data, train_data > 0, 1)
+    np.place(validation_data,  validation_data > 0, 1)
+    np.place(test_data, test_data > 0, 1)
 
     return train_data, train_label, validation_data, validation_label, test_data, test_label
 
