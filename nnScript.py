@@ -74,32 +74,39 @@ def preprocess():
         test_data = np.vstack((test_data, mat["test" + str(i)]))
         test_label = np.append(test_label, np.repeat(i, mat["test" + str(i)].shape[0]))
 
-
-
-    arr = train_label#np.array([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9])
-    tmp = np.array([[]]).reshape(0,10)
-    for i in range(0,arr.size):
-        tmp2 = np.repeat(0,10)
-        tmp2[arr[i]]=1
-        tmp = np.vstack((tmp,tmp2))
-    train_label = tmp
-
-    arr = validation_label#np.array([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9])
-    tmp = np.array([[]]).reshape(0,10)
-    for i in range(0,arr.size):
-        tmp2 = np.repeat(0,10)
-        tmp2[arr[i]]=1
-        tmp = np.vstack((tmp,tmp2))
-    validation_label = tmp
-
-    arr = test_label#np.array([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9])
-    tmp = np.array([[]]).reshape(0,10)
-    for i in range(0,arr.size):
-        tmp2 = np.repeat(0,10)
-        tmp2[arr[i]]=1
-        tmp = np.vstack((tmp,tmp2))
-    test_label = tmp
-
+    def convert_label_to_2d(arr):
+        tmp = np.array([[]]).reshape(0,10)
+        for i in range(0,arr.size):
+            tmp2 = np.repeat(0,10)
+            tmp2[arr[i]]=1
+            tmp = np.vstack((tmp,tmp2))
+        return tmp
+    #
+    # arr = train_label
+    # tmp = np.array([[]]).reshape(0,10)
+    # for i in range(0,arr.size):
+    #     tmp2 = np.repeat(0,10)
+    #     tmp2[arr[i]]=1
+    #     tmp = np.vstack((tmp,tmp2))
+    train_label = convert_label_to_2d(train_label)#tmp
+    validation_label = convert_label_to_2d(validation_label)
+    test_label = convert_label_to_2d(test_label)
+    # arr = validation_label
+    # tmp = np.array([[]]).reshape(0,10)
+    # for i in range(0,arr.size):
+    #     tmp2 = np.repeat(0,10)
+    #     tmp2[arr[i]]=1
+    #     tmp = np.vstack((tmp,tmp2))
+    # validation_label = tmp
+    #
+    # arr = test_label
+    # tmp = np.array([[]]).reshape(0,10)
+    # for i in range(0,arr.size):
+    #     tmp2 = np.repeat(0,10)
+    #     tmp2[arr[i]]=1
+    #     tmp = np.vstack((tmp,tmp2))
+    # test_label = tmp
+    #
 
 
     #normalize data
@@ -195,7 +202,14 @@ def nnPredict(w1, w2, data):
     data_bias_w1 = sigmoid(np.dot(data_bias,np.transpose(w1)))
     data_bias_w1_bias = np.hstack((data_bias_w1,bias_col))
     labels = sigmoid(np.dot(data_bias_w1_bias,np.transpose(w2)))
-    return labels
+    amax = np.argmax(labels,1);
+    tmparr = np.array([[]]).reshape(0,10)
+    for i in range(0,amax.size):
+        tmptmp = np.repeat(0,10);
+        tmptmp[amax[i]] = 1;
+        tmparr = np.vstack((tmparr,tmptmp))
+    # return labels
+    return tmparr
 
 
 """**************Neural Network Script Starts here********************************"""
