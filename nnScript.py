@@ -72,7 +72,35 @@ def preprocess():
         validation_data = np.vstack((validation_data, mat["train" + str(i)][5000:]))
         validation_label = np.append(validation_label, np.repeat(i, mat["train" + str(i)][5000:].shape[0]))
         test_data = np.vstack((test_data, mat["test" + str(i)]))
-        test_label = np.append(test_label, np.repeat(i, mat["train" + str(i)].shape[0]))
+        test_label = np.append(test_label, np.repeat(i, mat["test" + str(i)].shape[0]))
+
+
+
+    arr = train_label#np.array([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9])
+    tmp = np.array([[]]).reshape(0,10)
+    for i in range(0,arr.size):
+        tmp2 = np.repeat(0,10)
+        tmp2[arr[i]]=1
+        tmp = np.vstack((tmp,tmp2))
+    train_label = tmp
+
+    arr = validation_label#np.array([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9])
+    tmp = np.array([[]]).reshape(0,10)
+    for i in range(0,arr.size):
+        tmp2 = np.repeat(0,10)
+        tmp2[arr[i]]=1
+        tmp = np.vstack((tmp,tmp2))
+    validation_label = tmp
+
+    arr = test_label#np.array([0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9])
+    tmp = np.array([[]]).reshape(0,10)
+    for i in range(0,arr.size):
+        tmp2 = np.repeat(0,10)
+        tmp2[arr[i]]=1
+        tmp = np.vstack((tmp,tmp2))
+    test_label = tmp
+
+
 
     #normalize data
     np.place(train_data, train_data > 0, 1)
@@ -162,10 +190,10 @@ def nnPredict(w1, w2, data):
 
     # labels = np.array([])
     # Your code here
-    new_col = np.ones_like(data[:,-1]).reshape(-1, 1)
-    data_bias = np.hstack((data, new_col))
+    bias_col = np.ones_like(data[:,-1]).reshape(-1, 1)
+    data_bias = np.hstack((data, bias_col))
     data_bias_w1 = sigmoid(np.dot(data_bias,np.transpose(w1)))
-    data_bias_w1_bias = np.hstack((data_bias_w1,new_col))
+    data_bias_w1_bias = np.hstack((data_bias_w1,bias_col))
     labels = sigmoid(np.dot(data_bias_w1_bias,np.transpose(w2)))
     return labels
 
@@ -202,7 +230,7 @@ lambdaval = 0;
 
 opts = {'maxiter': 50}  # Preferred value.
 
-nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args, method='CG', options=opts)
+# nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args, method='CG', options=opts)
 
 #In Case you want to use fmin_cg, you may have to split the nnObjectFunction to two functions nnObjFunctionVal
 #and nnObjGradient. Check documentation for this function before you proceed.
@@ -210,8 +238,8 @@ nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args, method=
 
 
 #Reshape nnParams from 1D vector into w1 and w2 matrices
-w1 = nn_params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
-w2 = nn_params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
+w1 = initial_w1#nn_params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
+w2 = initial_w2#nn_params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
 
 
 #Test the computed parameters
@@ -229,7 +257,6 @@ predicted_label = nnPredict(w1, w2, validation_data)
 print '\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%'
 
 predicted_label = nnPredict(w1, w2, test_data)
-
 # find the accuracy on Validation Dataset
 
-print '\n Test set Accuracy:' + + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%'
+print '\n Test set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%'
