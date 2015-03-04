@@ -24,8 +24,8 @@ def initializeWeights(n_in, n_out):
 def sigmoid(z):
     """# Notice that z can be a scalar, a vector or a matrix
     # return the sigmoid of input z"""
-
-    return  # your code here
+    return 1 / (1 + np.exp(-z))
+    # return  # your code here
 
 
 def preprocess():
@@ -74,7 +74,7 @@ def preprocess():
         test_data = np.vstack((test_data, mat["test" + str(i)]))
         test_label = np.append(test_label, np.repeat(i, mat["train" + str(i)].shape[0]))
 
-    #normalize data 
+    #normalize data
     np.place(train_data, train_data > 0, 1)
     np.place(validation_data,  validation_data > 0, 1)
     np.place(test_data, test_data > 0, 1)
@@ -160,9 +160,13 @@ def nnPredict(w1, w2, data):
     % Output:
     % label: a column vector of predicted labels"""
 
-    labels = np.array([])
+    # labels = np.array([])
     # Your code here
-
+    new_col = np.ones_like(data[:,-1]).reshape(-1, 1)
+    data_bias = np.hstack((data, new_col))
+    data_bias_w1 = sigmoid(np.dot(data_bias,np.transpose(w1)))
+    data_bias_w1_bias = np.hstack((data_bias_w1,new_col))
+    labels = sigmoid(np.dot(data_bias_w1_bias,np.transpose(w2)))
     return labels
 
 
@@ -192,7 +196,7 @@ initialWeights = np.concatenate((initial_w1.flatten(), initial_w2.flatten()), 0)
 # set the regularization hyper-parameter
 lambdaval = 0;
 
-args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
+# args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
 
 #Train Neural Network using fmin_cg or minimize from scipy,optimize module. Check documentation for a working example
 
@@ -226,6 +230,6 @@ print '\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == vali
 
 predicted_label = nnPredict(w1, w2, test_data)
 
-#find the accuracy on Validation Dataset
+# find the accuracy on Validation Dataset
 
 print '\n Test set Accuracy:' + + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%'
