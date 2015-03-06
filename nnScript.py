@@ -22,10 +22,7 @@ def initializeWeights(n_in, n_out):
 
 
 def sigmoid(z):
-    """# Notice that z can be a scalar, a vector or a matrix
-    # return the sigmoid of input z"""
     return 1 / (1 + np.exp(-z))
-    # return  # your code here
 
 
 def preprocess():
@@ -81,33 +78,10 @@ def preprocess():
             tmp2[arr[i]]=1
             tmp = np.vstack((tmp,tmp2))
         return tmp
-    #
-    # arr = train_label
-    # tmp = np.array([[]]).reshape(0,10)
-    # for i in range(0,arr.size):
-    #     tmp2 = np.repeat(0,10)
-    #     tmp2[arr[i]]=1
-    #     tmp = np.vstack((tmp,tmp2))
+
     train_label = convert_label_to_2d(train_label)#tmp
     validation_label = convert_label_to_2d(validation_label)
     test_label = convert_label_to_2d(test_label)
-    # arr = validation_label
-    # tmp = np.array([[]]).reshape(0,10)
-    # for i in range(0,arr.size):
-    #     tmp2 = np.repeat(0,10)
-    #     tmp2[arr[i]]=1
-    #     tmp = np.vstack((tmp,tmp2))
-    # validation_label = tmp
-    #
-    # arr = test_label
-    # tmp = np.array([[]]).reshape(0,10)
-    # for i in range(0,arr.size):
-    #     tmp2 = np.repeat(0,10)
-    #     tmp2[arr[i]]=1
-    #     tmp = np.vstack((tmp,tmp2))
-    # test_label = tmp
-    #
-
 
     #normalize data
     np.place(train_data, train_data > 0, 1)
@@ -159,16 +133,17 @@ def nnObjFunction(params, *args):
 
     w1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
-    obj_val = 0
+    m = training_data.shape[0]
+    Y = np.eye(n_class)[training_label]
+    h = nnPredict(w1,w2,training_data)
+    cost = (-Y * np.log(h).T )- ((1 - Y) * np.log(1 - h).T)
+    obj_val = np.sum(cost) / m
 
-    # Your code here
-    #
-    #
-    #
-    #
-    #
-
-
+    if lambdaval != 0:
+        t1f = w1[:, 1:]
+        t2f = w2[:, 1:]
+        reg = (lambdaval / (2 * m)) * (np.sum(t1f)**2 + np.sum(t2f)**2)
+        obj_val = obj_val + reg
 
     #Make sure you reshape the gradient matrices to a 1D array. for instance if your gradient matrices are grad_w1 and grad_w2
     #you would use code similar to the one below to create a flat array
@@ -209,6 +184,7 @@ def nnPredict(w1, w2, data):
         tmptmp[amax[i]] = 1;
         tmparr = np.vstack((tmparr,tmptmp))
     # return labels
+    # print tmparr == labels.argmax(0)
     return tmparr
 
 
