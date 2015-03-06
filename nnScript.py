@@ -135,7 +135,7 @@ def nnObjFunction(params, *args):
     w2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     m = training_data.shape[0]
     Y = np.eye(n_class)[training_label]
-    h = nnPredict(w1,w2,training_data)
+    h = nnPredictHelper(w1,w2,training_data)
     cost = (-Y * np.log(h).T )- ((1 - Y) * np.log(1 - h).T)
     obj_val = np.sum(cost) / m
 
@@ -152,6 +152,13 @@ def nnObjFunction(params, *args):
 
     return (obj_val, obj_grad)
 
+def nnPredictHelper(w1,w2,data):
+    bias_col = np.ones_like(data[:,-1]).reshape(-1, 1)
+    data_bias = np.hstack((data, bias_col))
+    data_bias_w1 = sigmoid(np.dot(data_bias,np.transpose(w1)))
+    data_bias_w1_bias = np.hstack((data_bias_w1,bias_col))
+    labels = sigmoid(np.dot(data_bias_w1_bias,np.transpose(w2)))
+    return labels
 
 def nnPredict(w1, w2, data):
     """% nnPredict predicts the label of data given the parameter w1, w2 of Neural
@@ -172,11 +179,7 @@ def nnPredict(w1, w2, data):
 
     # labels = np.array([])
     # Your code here
-    bias_col = np.ones_like(data[:,-1]).reshape(-1, 1)
-    data_bias = np.hstack((data, bias_col))
-    data_bias_w1 = sigmoid(np.dot(data_bias,np.transpose(w1)))
-    data_bias_w1_bias = np.hstack((data_bias_w1,bias_col))
-    labels = sigmoid(np.dot(data_bias_w1_bias,np.transpose(w2)))
+    labels = nnPredictHelper(w1,w2,data)
     amax = np.argmax(labels,1);
     tmparr = np.array([[]]).reshape(0,10)
     for i in range(0,amax.size):
