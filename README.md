@@ -30,24 +30,25 @@ In many research papers, the official training set of 60000 examples is divided 
 ##3.2.1 Neural Network Representation
 Neural network can be graphically represented as in Figure 1.
 As observed in the Figure 1, there are totally 3 layers in the neural network:
-• The first layer comprises of (d + 1) units, each represents a feature of image (there is one extra unit
+<ul>
+<li>The first layer comprises of (d + 1) units, each represents a feature of image (there is one extra unit
 representing the bias).
-• The second layer in neural network is called the hidden units. In this document, we denote m + 1
+<li>The second layer in neural network is called the hidden units. In this document, we denote m + 1
 as the number of hidden units in hidden layer. There is an additional bias node at the hidden layer
 as well. Hidden units can be considered as the learned features extracted from the original data set.
 Since number of hidden units will represent the dimension of learned features in neural network, it’s
 our choice to choose an appropriate number of hidden units. Too many hidden units may lead to the
 slow training phase while too few hidden units may cause the the under-fitting problem.
-• The third layer is also called the output layer. The value of l th unit in the output layer represents
+<li>The third layer is also called the output layer. The value of l th unit in the output layer represents
 the probability of a certain hand-written image belongs to digit l. Since we have 10 possible digits,
 there are 10 units in the output layer. In this document, we denote k as the number of output units
 in output layer.
 The parameters in Neural Network model are the weights associated with the hidden layer units and the
 output layers units. In our standard Neural Network with 3 layers (input, hidden, output), in order to
 represent the model parameters, we use 2 matrices:
-• W (1) ∈ R m×(d+1) is the weight matrix of connections from input layer to hidden layer. Each row in
+<li>W (1) ∈ R m×(d+1) is the weight matrix of connections from input layer to hidden layer. Each row in
 this matrix corresponds to the weight vector at each hidden layer unit.
-• W (2) ∈ R k×(m+1) is the weight matrix of connections from hidden layer to output layer. Each row in
+<li>W (2) ∈ R k×(m+1) is the weight matrix of connections from hidden layer to output layer. Each row in
 this matrix corresponds to the weight vector at each output layer unit.
 We also further assume that there are n training samples when performing learning task of Neural Network.
 In the next section, we will explain how to perform learning in Neural Network.
